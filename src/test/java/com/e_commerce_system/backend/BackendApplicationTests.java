@@ -50,7 +50,7 @@ class BackendApplicationTests {
         product = new Product(null, "Test Product", 100, "Test Description", 10);
         product = productRepository.save(product);
 
-        member = new Member(null, "testuser", "password");
+        member = new Member(null, "testuser", "password","email");
         member = memberRepository.save(member);
     }
 

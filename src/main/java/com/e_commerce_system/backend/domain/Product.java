@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import com.e_commerce_system.backend.exception.InsufficientStockException;
 @Entity
 @Getter
 @Setter
@@ -26,4 +26,12 @@ public class Product {
     private String description;
 
     private Integer stock;
+
+    public void decreaseStock(int quantity) {
+        if (this.stock < quantity) {
+            throw new InsufficientStockException(this.id, quantity, this.stock);
+        }
+        this.stock -= quantity;
+    }
+
 }
