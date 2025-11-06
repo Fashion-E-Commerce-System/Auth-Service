@@ -45,5 +45,11 @@ This project uses [k6](https://k6.io/) for load testing.
 3.  Run the following command:
 
     ```bash
+    .\run_k6_test.bat
+    ```
+
+    Alternatively, you can run the k6 script directly:
+
+    ```bash
     k6 run scripts/test.js
     ```
