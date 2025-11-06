@@ -1,7 +1,6 @@
 package com.e_commerce_system.backend.domain;
 
-import com.e_commerce_system.backend.domain.Member;
-import com.e_commerce_system.backend.domain.Product;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
