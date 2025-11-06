@@ -30,6 +30,27 @@
 
 ![UML Class Diagram](docs/images/main_diagram.svg)
 
+## 백엔드 테스트 실행
+
+이 프로젝트의 백엔드 테스트는 Gradle을 사용하여 실행됩니다. 테스트는 `src/test` 디렉터리에 위치합니다.
+
+### 테스트 실행 방법
+
+1.  프로젝트의 루트 디렉터리(`backend` 폴더)로 이동합니다.
+2.  다음 Gradle 명령어를 실행하여 모든 테스트를 실행합니다:
+
+    ```bash
+    .\gradlew test
+    ```
+
+    또는 특정 테스트 클래스만 실행하려면:
+
+    ```bash
+    .\gradlew test --tests "com.e_commerce_system.backend.BackendApplicationTests"
+    ```
+
+    테스트 결과는 `build/reports/tests/test/index.html`에서 확인할 수 있습니다.
+
 ## k6를 이용한 부하 테스트
 
 이 프로젝트는 부하 테스트를 위해 [k6](https://k6.io/)를 사용합니다.
@@ -71,18 +92,3 @@
 -   **다른 HTTP 메서드 사용**: `http.post()`, `http.put()`, `http.del()` 등 다른 HTTP 메서드를 사용하여 다양한 유형의 요청을 시뮬레이션할 수 있습니다.
 -   **요청 본문 추가**: `http.post()`와 같은 메서드에 JSON 또는 다른 형식의 요청 본문을 추가할 수 있습니다.
 -   **인증 추가**: 토큰 기반 인증이 필요한 경우, 요청 헤더에 인증 토큰을 추가할 수 있습니다.
--   **더 많은 검사 추가**: `check()` 함수를 사용하여 응답 본문의 내용, 응답 시간 등 다양한 조건에 대한 검사를 추가할 수 있습니다.
-
-1.  백엔드 애플리케이션이 실행 중인지 확인합니다.
-2.  터미널을 열고 `k6` 디렉터리로 이동합니다.
-3.  다음 명령어를 실행합니다:
-
-    ```bash
-    .\run_k6_test.bat
-    ```
-
-    또는 k6 스크립트를 직접 실행할 수도 있습니다:
-
-    ```bash
-    k6 run scripts/test.js
-    ```
