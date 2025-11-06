@@ -29,3 +29,21 @@ The project follows a layered architecture, organized by feature function into t
 아래 다이어그램은 이 프로젝트의 주요 클래스와 그 관계를 시각적으로 보여줍니다. 각 패키지(controller, service, repository, domain, dto)의 클래스들이 어떻게 서로 의존하고 상호작용하는지 나타냅니다.
 
 ![UML Class Diagram](docs/images/main_diagram.svg)
+
+## Load Testing with k6
+
+This project uses [k6](https://k6.io/) for load testing.
+
+### Prerequisites
+
+- [k6](https://k6.io/docs/getting-started/installation/) installed on your machine.
+
+### Running the Tests
+
+1.  Make sure the backend application is running.
+2.  Open a terminal and navigate to the `k6` directory.
+3.  Run the following command:
+
+    ```bash
+    k6 run scripts/test.js
+    ```
