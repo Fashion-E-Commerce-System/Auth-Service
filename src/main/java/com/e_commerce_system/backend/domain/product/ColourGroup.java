@@ -1,6 +1,6 @@
-package com.e_commerce_system.backend.domain;
+package com.e_commerce_system.backend.domain.product;
 
-import jakarta.persistence.Column;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -15,9 +15,9 @@ import lombok.Setter;
 public class ColourGroup {
 
     @Id
-    @Column(name = "colour_group_code")
     private Integer colourGroupCode;
 
-    @Column(name = "colour_group_name")
     private String colourGroupName;
+
+
 }

@@ -1,4 +1,4 @@
-package com.e_commerce_system.backend.domain;
+package com.e_commerce_system.backend.domain.product;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,9 +15,9 @@ import lombok.Setter;
 public class GarmentGroup {
 
     @Id
-    @Column(name = "garment_group_no")
     private Integer garmentGroupNo;
 
-    @Column(name = "garment_group_name")
     private String garmentGroupName;
+
+
 }

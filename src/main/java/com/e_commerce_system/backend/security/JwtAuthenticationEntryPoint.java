@@ -1,4 +1,4 @@
-package com.e_commerce_system.backend.jwt;
+package com.e_commerce_system.backend.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

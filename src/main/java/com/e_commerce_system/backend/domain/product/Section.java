@@ -1,4 +1,4 @@
-package com.e_commerce_system.backend.domain;
+package com.e_commerce_system.backend.domain.product;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,9 +15,8 @@ import lombok.Setter;
 public class Section {
 
     @Id
-    @Column(name = "section_no")
     private Integer sectionNo;
 
-    @Column(name = "section_name")
     private String sectionName;
+
 }

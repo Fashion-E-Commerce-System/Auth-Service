@@ -1,4 +1,4 @@
-package com.e_commerce_system.backend.domain;
+package com.e_commerce_system.backend.domain.product;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,9 +15,7 @@ import lombok.Setter;
 public class PerceivedColourValue {
 
     @Id
-    @Column(name = "perceived_colour_value_id")
     private Integer perceivedColourValueId;
 
-    @Column(name = "perceived_colour_value_name")
     private String perceivedColourValueName;
 }

@@ -1,7 +1,7 @@
 package com.e_commerce_system.backend.service;
 
 import com.e_commerce_system.backend.dto.auth.TokenResponse;
-import com.e_commerce_system.backend.jwt.JwtTokenProvider;
+import com.e_commerce_system.backend.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

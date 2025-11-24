@@ -1,0 +1,65 @@
+<svg width="1200" height="1000" xmlns="http://www.w3.org/2000/svg" font-family="monospace">
+  <text x="10" y="20">Product Domain ER Diagram (Mermaid Source)</text>
+  <foreignObject x="10" y="40" width="1180" height="950">
+    <body xmlns="http://www.w3.org/1999/xhtml">
+      <pre>
+erDiagram
+    Article {
+        Long articleId
+        String productCode
+        String prodName
+        String detailDesc
+    }
+    ProductType {
+        Integer productTypeNo
+        String productTypeName
+        String productGroupName
+    }
+    GraphicalAppearance {
+        Integer graphicalAppearanceNo
+        String graphicalAppearanceName
+    }
+    ColourGroup {
+        Integer colourGroupCode
+        String colourGroupName
+    }
+    IndexGroup {
+        String indexCode
+        Integer indexGroupNo
+        String indexName
+        String indexGroupName
+    }
+    Section {
+        Integer sectionNo
+        String sectionName
+    }
+    GarmentGroup {
+        Integer garmentGroupNo
+        String garmentGroupName
+    }
+    Department {
+        Integer departmentNo
+        String departmentName
+    }
+    PerceivedColourMaster {
+        Integer perceivedColourMasterId
+        String perceivedColourMasterName
+    }
+    PerceivedColourValue {
+        Integer perceivedColourValueId
+        String perceivedColourValueName
+    }
+
+    Article }o--|| ProductType : "type"
+    Article }o--|| GraphicalAppearance : "appearance"
+    Article }o--|| ColourGroup : "colour"
+    Article }o--|| IndexGroup : "index"
+    Article }o--|| Section : "section"
+    Article }o--|| GarmentGroup : "garment"
+    Article }o--|| Department : "department"
+    Article }o--|| PerceivedColourMaster : "master colour"
+    Article }o--|| PerceivedColourValue : "colour value"
+      </pre>
+    </body>
+  </foreignObject>
+</svg>

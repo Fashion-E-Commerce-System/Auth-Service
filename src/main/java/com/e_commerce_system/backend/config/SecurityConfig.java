@@ -1,9 +1,9 @@
 package com.e_commerce_system.backend.config;
 
-import com.e_commerce_system.backend.jwt.CustomAccessDeniedHandler;
-import com.e_commerce_system.backend.jwt.JwtAuthenticationEntryPoint;
-import com.e_commerce_system.backend.jwt.JwtAuthenticationFilter;
-import com.e_commerce_system.backend.jwt.JwtTokenProvider;
+import com.e_commerce_system.backend.security.CustomAccessDeniedHandler;
+import com.e_commerce_system.backend.security.JwtAuthenticationEntryPoint;
+import com.e_commerce_system.backend.security.JwtAuthenticationFilter;
+import com.e_commerce_system.backend.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

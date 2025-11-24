@@ -1,11 +1,8 @@
 package com.e_commerce_system.backend;
 
-import com.e_commerce_system.backend.domain.Member;
 import com.e_commerce_system.backend.repository.MemberRepository;
-import com.e_commerce_system.backend.domain.Order;
 import com.e_commerce_system.backend.repository.OrderRepository;
 import com.e_commerce_system.backend.dto.OrderRequest;
-import com.e_commerce_system.backend.domain.Product;
 import com.e_commerce_system.backend.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +12,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.boot.test.web.server.LocalServerPort;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
