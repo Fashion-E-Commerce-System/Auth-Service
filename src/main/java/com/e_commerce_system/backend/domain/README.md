@@ -16,8 +16,3 @@
 
 ![Domain Diagram](../../../../../../../docs/images/domain.svg)
 
-### Product Subdomain ER Diagram
-
-The ER diagram below shows the structure of the `product` subdomain, centered around the `Article` entity and its various attributes.
-
-![Product Domain Diagram](../../../../../../../docs/images/product_domain.svg)
