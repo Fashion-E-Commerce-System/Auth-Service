@@ -1,51 +1,74 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-let accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmdAbmF2ZXIuY29tIiwiaWF0IjoxNzYyNTE0OTEzLCJleHAiOjE3NjI1MTUyMTN9.K9N_C-HQgz3IuYcwcI4izRLGXwAPeC0pKszAr73C2Ts';
-const refreshToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmdAbmF2ZXIuY29tIiwiaWF0IjoxNzYyNTE0OTEzLCJleHAiOjE3NjI2MDEzMTN9.0MCDy6chQISU1eVslBioa2jaxONv5yyIlQcU3LDVHzg';
-
 export let options = {
-    vus: 10,
-    duration: '30s',
+    vus: 1,
+    duration: '1s',
 };
 
-function refreshAccessToken() {
-    const res = http.post('http://localhost:8080/auth/refresh', JSON.stringify({
-        refreshToken: refreshToken,
-    }), {
+// Replace with actual user credentials
+const credentials = {
+    id: 'testuser',
+    password: 'password',
+};
+export default function () {
+    // 1. Login to get tokens
+    const loginRes = http.post('http://localhost:8080/auth/login', JSON.stringify(credentials), {
         headers: { 'Content-Type': 'application/json' },
     });
 
-    if (res.status === 200) {
-        const json = res.json();
-        accessToken = json.accessToken;
-        console.log('🔄 Access token refreshed');
-    } else {
-        console.error('❌ Failed to refresh token');
-    }
-}
+    check(loginRes, {
+        'login successful': (r) => r.status === 200,
+    });
 
-export default function () {
-    let res = http.get('http://localhost:8080/api/products/', {
+    if (loginRes.status !== 200) {
+        console.error(`❌ Login failed: ${loginRes.status} ${loginRes.body}`);
+        return;
+    }
+
+    let accessToken = loginRes.json('accessToken');
+    const refreshToken = loginRes.json('refreshToken');
+    console.log('✅ Login successful');
+
+    sleep(1);
+
+    // 2. Refresh the access token (Authorization 헤더로 전달)
+    const refreshRes = http.post('http://localhost:8080/auth/refresh', null, {
         headers: {
-            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${refreshToken}`,  // ✅ Refresh Token을 헤더로 보냄
         },
     });
 
-    if (res.status === 401) {
-        refreshAccessToken();
+    check(refreshRes, {
+        'token refresh successful': (r) => r.status === 200,
+    });
 
-        // 재시도
-        res = http.get('http://localhost:8080/api/products/', {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
+    if (refreshRes.status === 200) {
+        accessToken = refreshRes.json('accessToken');
+        console.log('🔄 Access token refreshed');
+    } else {
+        console.error(`❌ Failed to refresh token: ${refreshRes.status} ${refreshRes.body}`);
     }
 
-    check(res, {
-        'status is 200': (r) => r.status === 200,
+    sleep(1);
+
+    // 3. Logout (Access Token으로 인증)
+    const logoutRes = http.post('http://localhost:8080/auth/logout', null, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+        },
     });
+
+    check(logoutRes, {
+        'logout successful': (r) => r.status === 200,
+    });
+
+    if (logoutRes.status === 200) {
+        console.log('👋 Logout successful');
+    } else {
+        console.error(`❌ Logout failed: ${logoutRes.status} ${logoutRes.body}`);
+    }
 
     sleep(1);
 }

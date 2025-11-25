@@ -17,6 +17,6 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 echo Running k6 load test...
-k6 run scripts/test.js
+k6 run k6/scripts/test.js
 
 ENDLOCAL
