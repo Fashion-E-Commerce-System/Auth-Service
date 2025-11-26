@@ -20,6 +20,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import net.devh.boot.grpc.server.security.authentication.GrpcAuthenticationReader;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import net.devh.boot.grpc.server.security.check.AccessPredicate;
+import net.devh.boot.grpc.server.security.check.GrpcSecurityMetadataSource;
+import net.devh.boot.grpc.server.security.check.ManualGrpcSecurityMetadataSource;
+import net.devh.boot.grpc.server.security.authentication.BearerAuthenticationReader;
+import com.ecommerce.backend.grpc.UserEventServiceGrpc;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -59,5 +69,18 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
+    }
+    @Bean
+    public GrpcAuthenticationReader grpcAuthenticationReader() {
+        return new BearerAuthenticationReader(jwtTokenProvider::getAuthentication);
+    }
+
+    @Bean
+    GrpcSecurityMetadataSource grpcSecurityMetadataSource() {
+        final ManualGrpcSecurityMetadataSource source = new ManualGrpcSecurityMetadataSource();
+        source.set(UserEventServiceGrpc.getCreateUserMethod(), AccessPredicate.permitAll());
+        source.set(UserEventServiceGrpc.getDeleteUserMethod(), AccessPredicate.permitAll());
+        source.setDefault(AccessPredicate.denyAll());
+        return source;
     }
 }
