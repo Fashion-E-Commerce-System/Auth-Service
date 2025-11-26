@@ -2,37 +2,34 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 export let options = {
-    vus: 1,
+    vus: 300,
     duration: '10s',
 };
 
-const credentials = {
-    username: 'testuser',
-    password: 'password',
-};
-
 export default function () {
-    // 1. Login
+    const username = `testuser${__VU}`;
+    const credentials = {
+        username: username,
+        password: 'password',
+    };
+
     const loginRes = http.post('http://localhost:8080/auth/login', JSON.stringify(credentials), {
         headers: { 'Content-Type': 'application/json' },
     });
 
-    check(loginRes, {
-        'login successful': (r) => r.status === 200,
-    });
+    check(loginRes, { 'login successful': (r) => r.status === 200 });
 
     if (loginRes.status !== 200) {
-        console.error(`❌ Login failed: ${loginRes.status} ${loginRes.body}`);
+        console.error(`❌ Login failed for ${username}: ${loginRes.status} ${loginRes.body}`);
         return;
     }
 
     let accessToken = loginRes.json('accessToken');
     const refreshToken = loginRes.json('refreshToken');
-    console.log('✅ Login successful');
+    console.log(`✅ Login successful for ${username}`);
 
     sleep(1);
 
-    // 2. Refresh (쿠키 방식)
     const jar = http.cookieJar();
     jar.set('http://localhost:8080', 'refreshToken', refreshToken);
 
@@ -41,20 +38,17 @@ export default function () {
         cookies: jar.cookiesForURL('http://localhost:8080'),
     });
 
-    check(refreshRes, {
-        'token refresh successful': (r) => r.status === 200,
-    });
+    check(refreshRes, { 'token refresh successful': (r) => r.status === 200 });
 
     if (refreshRes.status === 200) {
         accessToken = refreshRes.json('accessToken');
-        console.log('🔄 Access token refreshed:');
+        console.log(`🔄 Access token refreshed for ${username}`);
     } else {
-        console.error(`❌ Failed to refresh token: ${refreshRes.status} ${refreshRes.body}`);
+        console.error(`❌ Failed to refresh token for ${username}: ${refreshRes.status} ${refreshRes.body}`);
     }
 
     sleep(1);
 
-    // 3. Logout
     const logoutRes = http.post('http://localhost:8080/auth/logout', null, {
         headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -63,14 +57,12 @@ export default function () {
         cookies: jar.cookiesForURL('http://localhost:8080'),
     });
 
-    check(logoutRes, {
-        'logout successful': (r) => r.status === 200,
-    });
+    check(logoutRes, { 'logout successful': (r) => r.status === 200 });
 
     if (logoutRes.status === 200) {
-        console.log('👋 Logout successful');
+        console.log(`👋 Logout successful for ${username}`);
     } else {
-        console.error(`❌ Logout failed: ${logoutRes.status} ${logoutRes.body}`);
+        console.error(`❌ Logout failed for ${username}: ${logoutRes.status} ${logoutRes.body}`);
     }
 
     sleep(1);

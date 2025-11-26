@@ -18,15 +18,13 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.findByName("testuser").isEmpty()) {
-            User testUser = new User();
-            testUser.setName("testuser");
-            testUser.setPassword(passwordEncoder.encode("password"));
-
-
-            testUser.setRoles(Collections.singletonList("USER"));
-
-            userRepository.save(testUser);
+        userRepository.deleteAll();
+        for (int i = 1; i <= 300; i++) {
+            User user = new User();
+            user.setName("testuser" + i);
+            user.setPassword(passwordEncoder.encode("password"));
+            user.setRoles(Collections.singletonList("USER"));
+            userRepository.save(user);
         }
     }
 }
