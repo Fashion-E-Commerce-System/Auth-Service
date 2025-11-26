@@ -3,16 +3,16 @@ import { check, sleep } from 'k6';
 
 export let options = {
     vus: 1,
-    duration: '1s',
+    duration: '10s',
 };
 
-// Replace with actual user credentials
 const credentials = {
-    id: 'testuser',
+    username: 'testuser',
     password: 'password',
 };
+
 export default function () {
-    // 1. Login to get tokens
+    // 1. Login
     const loginRes = http.post('http://localhost:8080/auth/login', JSON.stringify(credentials), {
         headers: { 'Content-Type': 'application/json' },
     });
@@ -32,12 +32,13 @@ export default function () {
 
     sleep(1);
 
-    // 2. Refresh the access token (Authorization 헤더로 전달)
+    // 2. Refresh (쿠키 방식)
+    const jar = http.cookieJar();
+    jar.set('http://localhost:8080', 'refreshToken', refreshToken);
+
     const refreshRes = http.post('http://localhost:8080/auth/refresh', null, {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${refreshToken}`,  // ✅ Refresh Token을 헤더로 보냄
-        },
+        headers: { 'Content-Type': 'application/json' },
+        cookies: jar.cookiesForURL('http://localhost:8080'),
     });
 
     check(refreshRes, {
@@ -46,18 +47,20 @@ export default function () {
 
     if (refreshRes.status === 200) {
         accessToken = refreshRes.json('accessToken');
-        console.log('🔄 Access token refreshed');
+        console.log('🔄 Access token refreshed:');
     } else {
         console.error(`❌ Failed to refresh token: ${refreshRes.status} ${refreshRes.body}`);
     }
 
     sleep(1);
 
-    // 3. Logout (Access Token으로 인증)
+    // 3. Logout
     const logoutRes = http.post('http://localhost:8080/auth/logout', null, {
         headers: {
             'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
         },
+        cookies: jar.cookiesForURL('http://localhost:8080'),
     });
 
     check(logoutRes, {

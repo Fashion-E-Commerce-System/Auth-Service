@@ -24,7 +24,7 @@ public class DataInitializer implements CommandLineRunner {
             testUser.setPassword(passwordEncoder.encode("password"));
 
 
-            testUser.setRoles(Collections.singletonList("ROLE_USER"));
+            testUser.setRoles(Collections.singletonList("USER"));
 
             userRepository.save(testUser);
         }

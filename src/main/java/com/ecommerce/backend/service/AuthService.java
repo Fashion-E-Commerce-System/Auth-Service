@@ -26,41 +26,35 @@ public class AuthService implements UserDetailsService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisService redisService;
 
-
     @Transactional
     public TokenResponse login(LoginRequest request) {
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.getId(), request.getPassword());
-
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-
         TokenResponse tokenResponse = jwtTokenProvider.createToken(authentication);
 
-
-        redisService.setValues(authentication.getName(), tokenResponse.getRefreshToken(),
-                jwtTokenProvider.getRefreshTokenValidityInSeconds(), TimeUnit.SECONDS);
+        redisService.setValues(
+                authentication.getName(),
+                tokenResponse.getRefreshToken(),
+                jwtTokenProvider.getRefreshTokenValidityInSeconds(),
+                TimeUnit.SECONDS
+        );
 
         return tokenResponse;
     }
 
     public void logout(String accessToken) {
-
-
-
         if (!jwtTokenProvider.validateToken(accessToken)) {
             throw new IllegalArgumentException("Invalid token");
         }
-        
 
         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
-
 
         if (redisService.getValues(authentication.getName()) != null) {
             redisService.deleteValues(authentication.getName());
         }
-
 
         Long expiration = jwtTokenProvider.getExpiration(accessToken);
         redisService.setValues(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
@@ -68,27 +62,25 @@ public class AuthService implements UserDetailsService {
 
     @Transactional
     public TokenResponse refresh(String refreshToken) {
-
         if (!jwtTokenProvider.validateToken(refreshToken)) {
             throw new IllegalArgumentException("Invalid refresh token");
         }
 
-
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
-        
 
         String savedRefreshToken = redisService.getValues(authentication.getName());
         if (!refreshToken.equals(savedRefreshToken)) {
             throw new IllegalArgumentException("Mismatched refresh token");
         }
 
-
         TokenResponse tokenResponse = jwtTokenProvider.createToken(authentication);
-        
 
-        redisService.setValues(authentication.getName(), tokenResponse.getRefreshToken(),
-                jwtTokenProvider.getRefreshTokenValidityInSeconds(), TimeUnit.SECONDS);
-        
+        redisService.setValues(
+                authentication.getName(),
+                tokenResponse.getRefreshToken(),
+                jwtTokenProvider.getRefreshTokenValidityInSeconds(),
+                TimeUnit.SECONDS
+        );
 
         Long expiration = jwtTokenProvider.getExpiration(refreshToken);
         redisService.setValues(refreshToken, "logout", expiration, TimeUnit.MILLISECONDS);
@@ -96,18 +88,15 @@ public class AuthService implements UserDetailsService {
         return tokenResponse;
     }
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         User user = userRepository.findByName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-
         return org.springframework.security.core.userdetails.User.builder()
-                .username(String.valueOf(user.getName()))
+                .username(user.getName())
                 .password(user.getPassword())
-                .roles(String.valueOf(user.getRoles()))
+                .roles(user.getRoles().toArray(new String[0]))
                 .build();
     }
 }

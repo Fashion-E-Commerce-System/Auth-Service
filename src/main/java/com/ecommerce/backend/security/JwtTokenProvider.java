@@ -17,6 +17,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class JwtTokenProvider {
@@ -77,18 +78,15 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-        String email = claims.getSubject();
-        List<SimpleGrantedAuthority> authorities = List.of(claims.get("roles").toString().split(","))
-                .stream()
+        String username = claims.getSubject();
+        List<SimpleGrantedAuthority> authorities = Stream.of(claims.get("roles").toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        return new UsernamePasswordAuthenticationToken(email, null, authorities);
+        return new UsernamePasswordAuthenticationToken(username, null, authorities);
     }
 
-    public String getEmail(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
-    }
+
     
     public long getRefreshTokenValidityInSeconds() {
         return refreshTokenValidityInMilliseconds / 1000;
