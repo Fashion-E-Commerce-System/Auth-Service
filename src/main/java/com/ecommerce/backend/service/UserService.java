@@ -15,19 +15,19 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public User createUser(String username, String password) {
-        if (userRepository.findByName(username).isPresent()) {
+    public void createUser(String username, String password) {
+        if (userRepository.findByUsername(username).isPresent()) {
             throw new IllegalArgumentException("User with name " + username + " already exists.");
         }
         User user = new User();
-        user.setName(username);
+        user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Transactional
     public void deleteUser(String username) {
-        User user = userRepository.findByName(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User with name " + username + " not found."));
         userRepository.delete(user);
     }

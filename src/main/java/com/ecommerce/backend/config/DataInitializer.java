@@ -21,7 +21,7 @@ public class DataInitializer implements CommandLineRunner {
         userRepository.deleteAll();
         for (int i = 1; i <= 300; i++) {
             User user = new User();
-            user.setName("testuser" + i);
+            user.setUsername("testuser" + i);
             user.setPassword(passwordEncoder.encode("password"));
             user.setRoles(Collections.singletonList("USER"));
             userRepository.save(user);

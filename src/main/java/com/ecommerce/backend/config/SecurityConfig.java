@@ -19,16 +19,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import net.devh.boot.grpc.server.security.authentication.GrpcAuthenticationReader;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import net.devh.boot.grpc.server.security.check.AccessPredicate;
 import net.devh.boot.grpc.server.security.check.GrpcSecurityMetadataSource;
 import net.devh.boot.grpc.server.security.check.ManualGrpcSecurityMetadataSource;
 import net.devh.boot.grpc.server.security.authentication.BearerAuthenticationReader;
-import com.ecommerce.backend.grpc.UserEventServiceGrpc;
+import com.ecommerce.backend.grpc.AuthServiceGrpc;
 
 @Configuration
 @EnableWebSecurity
@@ -63,13 +59,15 @@ public class SecurityConfig {
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(customAccessDeniedHandler)
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisService), UsernamePasswordAuthenticationFilter.class); // Pass RedisService
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+
     @Bean
     public GrpcAuthenticationReader grpcAuthenticationReader() {
         return new BearerAuthenticationReader(jwtTokenProvider::getAuthentication);
@@ -78,8 +76,8 @@ public class SecurityConfig {
     @Bean
     GrpcSecurityMetadataSource grpcSecurityMetadataSource() {
         final ManualGrpcSecurityMetadataSource source = new ManualGrpcSecurityMetadataSource();
-        source.set(UserEventServiceGrpc.getCreateUserMethod(), AccessPredicate.permitAll());
-        source.set(UserEventServiceGrpc.getDeleteUserMethod(), AccessPredicate.permitAll());
+        source.set(AuthServiceGrpc.getCreateUserMethod(), AccessPredicate.permitAll());
+        source.set(AuthServiceGrpc.getDeleteUserMethod(), AccessPredicate.permitAll());
         source.setDefault(AccessPredicate.denyAll());
         return source;
     }
