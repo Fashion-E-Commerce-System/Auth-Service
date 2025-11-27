@@ -17,7 +17,7 @@ public class AuthController {
 
     private final AuthService authService;
     @Value("${jwt.refresh-token-validity-in-seconds}")
-    private long accessTokenValidityInSeconds;
+    private long refreshTokenValidityInSeconds;
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
 
@@ -28,7 +28,7 @@ public class AuthController {
                 .secure(true)
                 .sameSite("Lax")
                 .path("/auth/refresh")
-                .maxAge(accessTokenValidityInSeconds)
+                .maxAge(refreshTokenValidityInSeconds)
                 .build();
 
         return ResponseEntity.ok()

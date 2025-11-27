@@ -3,16 +3,19 @@ package com.ecommerce.backend.service;
 import com.ecommerce.backend.domain.User;
 import com.ecommerce.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+
 
     @Transactional
     public void createUser(String username, String password) {
@@ -21,7 +24,8 @@ public class UserService {
         }
         User user = new User();
         user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(password);
+        user.setRoles(List.of("USER"));
         userRepository.save(user);
     }
 

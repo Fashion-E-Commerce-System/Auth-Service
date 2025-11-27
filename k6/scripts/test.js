@@ -13,7 +13,7 @@ export default function () {
         password: 'password',
     };
 
-    const loginRes = http.post('http://localhost:8080/auth/login', JSON.stringify(credentials), {
+    const loginRes = http.post('http://localhost:8081/auth/login', JSON.stringify(credentials), {
         headers: { 'Content-Type': 'application/json' },
     });
 
@@ -31,11 +31,11 @@ export default function () {
     sleep(1);
 
     const jar = http.cookieJar();
-    jar.set('http://localhost:8080', 'refreshToken', refreshToken);
+    jar.set('http://localhost:8081', 'refreshToken', refreshToken);
 
-    const refreshRes = http.post('http://localhost:8080/auth/refresh', null, {
+    const refreshRes = http.post('http://localhost:8081/auth/refresh', null, {
         headers: { 'Content-Type': 'application/json' },
-        cookies: jar.cookiesForURL('http://localhost:8080'),
+        cookies: jar.cookiesForURL('http://localhost:8081'),
     });
 
     check(refreshRes, { 'token refresh successful': (r) => r.status === 200 });
@@ -49,12 +49,12 @@ export default function () {
 
     sleep(1);
 
-    const logoutRes = http.post('http://localhost:8080/auth/logout', null, {
+    const logoutRes = http.post('http://localhost:8081/auth/logout', null, {
         headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
         },
-        cookies: jar.cookiesForURL('http://localhost:8080'),
+        cookies: jar.cookiesForURL('http://localhost:8081'),
     });
 
     check(logoutRes, { 'logout successful': (r) => r.status === 200 });
