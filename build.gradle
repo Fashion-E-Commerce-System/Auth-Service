@@ -83,3 +83,8 @@ sourceSets {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.named('processResources') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude '**/*.proto'
+}
